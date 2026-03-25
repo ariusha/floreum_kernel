@@ -1,0 +1,12 @@
+[package]
+name = "floreum_kernel"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+crossbeam = { version = "0.8.4", default-features = false, features = ["alloc"] }
+elf = { version = "0.8.0", default-features = false, features = ["alloc", "to_str"] }
+ostd = { version = "0.17.1" }
+
+[workspace]
+exclude = ["target/osdk/base", "target/osdk/test-base"]
