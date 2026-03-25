@@ -1,12 +1,12 @@
-use crate::{architecture::Abi, thread::Thread};
+use crate::{architecture::Abi, handle::Handle};
 use alloc::{sync::Weak, vec, vec::Vec};
 use ostd::{
     mm::{FallibleVmRead, VmWriter},
     prelude::println,
 };
-pub fn handle(thread: &Weak<Thread>, abi: Abi) -> Option<Abi> {
+pub fn handle(handle: &Handle, abi: Abi) -> Option<Abi> {
     let mut buffer: Vec<u8> = vec![0; abi.2.try_into().unwrap()];
-    let process = thread.upgrade()?.process.upgrade()?;
+    let process = handle.thread.upgrade()?.process().upgrade()?;
     let mut reader = process
         .memory
         .reader(abi.1.try_into().ok()?, abi.2.try_into().ok()?)

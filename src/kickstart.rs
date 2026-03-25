@@ -1,19 +1,16 @@
-use crate::{process::Process, thread::Thread};
-use alloc::{boxed::Box, sync::Arc, vec::Vec};
-use core::sync::atomic::AtomicBool;
-use crossbeam::queue::SegQueue;
+use crate::process::Process;
+use alloc::sync::Arc;
 use elf::{ElfBytes, abi::PT_LOAD, endian::LittleEndian};
 use ostd::{
     arch::cpu::context::UserContext,
-    mm::{CachePolicy, FrameAllocOptions, PAGE_SIZE, PageFlags, PageProperty, VmIo, VmSpace},
-    sync::{RwLock, RwMutex},
+    mm::{CachePolicy, FrameAllocOptions, PAGE_SIZE, PageFlags, PageProperty, VmIo},
     task::disable_preempt,
     user::UserContextApi,
 };
-pub fn new(elf_bytes: &[u8]) -> &'static Arc<Process> {
+pub fn new(elf_bytes: &[u8]) -> Arc<Process> {
     let elf: ElfBytes<'_, LittleEndian> = elf::ElfBytes::minimal_parse(elf_bytes).unwrap();
-    let memory = Arc::new(VmSpace::new());
-    memory.activate();
+    let process = Process::kickstart();
+    process.memory.activate();
     let guard = disable_preempt();
     for header in elf
         .segments()
@@ -23,7 +20,7 @@ pub fn new(elf_bytes: &[u8]) -> &'static Arc<Process> {
     {
         let segment_length: usize = header.p_memsz.try_into().unwrap();
         let segment = FrameAllocOptions::new()
-            .alloc_segment((segment_length + PAGE_SIZE - 1) / PAGE_SIZE)
+            .alloc_segment((segment_length + PAGE_SIZE - 1) / PAGE_SIZE) // todo
             .unwrap();
         let segment_offset = header.p_offset.try_into().unwrap();
         segment
@@ -35,7 +32,7 @@ pub fn new(elf_bytes: &[u8]) -> &'static Arc<Process> {
             )
             .unwrap();
         let header_virtual = header.p_vaddr.try_into().unwrap();
-        let mut cursor = memory
+        let mut cursor = process.memory
             .cursor_mut(
                 &guard,
                 &(header_virtual
@@ -62,10 +59,6 @@ pub fn new(elf_bytes: &[u8]) -> &'static Arc<Process> {
             cursor.map(frame.into(), properties);
         }
     }
-    let process = Arc::new(Process {
-        memory,
-        threads: RwMutex::new(Vec::new()),
-    });
     let mut context = UserContext::default();
     context.set_instruction_pointer(elf.ehdr.e_entry.try_into().unwrap());
     let symbol_table = elf.symbol_table().unwrap().unwrap();
@@ -86,13 +79,6 @@ pub fn new(elf_bytes: &[u8]) -> &'static Arc<Process> {
             .unwrap(),
     );
     // context.set_tls_pointer(todo!());
-    let thread = Arc::new(Thread {
-        process: Arc::downgrade(&process),
-        executing: AtomicBool::new(true),
-        context: RwLock::new(context),
-        events: SegQueue::new(),
-        exception: RwLock::new(None),
-    });
-    (*process.threads.write()).push(thread);
-    Box::leak::<'static>(Box::new(process))
+    process.add_thread(context);
+    process
 }

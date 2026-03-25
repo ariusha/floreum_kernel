@@ -1,7 +1,6 @@
-use crate::{architecture::Abi, thread::Thread};
+use crate::{architecture::Abi, handle::Handle};
 use alloc::sync::Weak;
-use core::sync::atomic::Ordering;
-pub fn handle(thread: &Weak<Thread>, _abi: Abi) -> Option<Abi> {
-    thread.upgrade()?.executing.store(false, Ordering::Relaxed);
-    None
+pub fn handle(handle: &Handle, _abi: Abi) -> Option<Abi> {
+    handle.park()?;
+    Some(Abi(1, 0, 0, 0, 0, 0))
 }
