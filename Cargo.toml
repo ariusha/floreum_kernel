@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 crossbeam = { version = "0.8.4", default-features = false, features = ["alloc"] }
 elf = { version = "0.8.0", default-features = false, features = ["alloc", "to_str"] }
+floreum_parser = "13.0.0"
 ostd = { version = "0.17.1" }
 spin = "0.10.0"
 

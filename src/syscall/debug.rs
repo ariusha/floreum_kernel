@@ -1,5 +1,5 @@
 use crate::{architecture::Abi, handle::Handle};
-use alloc::{sync::Weak, vec, vec::Vec};
+use alloc::{vec, vec::Vec};
 use ostd::{
     mm::{FallibleVmRead, VmWriter},
     prelude::println,

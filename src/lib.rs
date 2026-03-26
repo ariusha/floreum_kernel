@@ -6,12 +6,16 @@ use crate::process::Process;
 pub mod architecture;
 pub mod kickstart;
 pub mod process;
+pub mod device;
+pub mod request;
 pub mod syscall;
+pub mod tag;
+pub mod exchange;
 pub mod handle;
 pub mod user;
 pub mod event;
 static KICKSTART: Once<Arc<Process>> = Once::new();
 #[ostd::main]
-fn kernel_main() {
-    let kickstart = kickstart::new(include_bytes!("../floreum_kickstart"));
+fn main() {
+    KICKSTART.call_once(|| kickstart::new(include_bytes!("../floreum_kickstart")));
 }

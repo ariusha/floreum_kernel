@@ -20,7 +20,7 @@ pub fn new(elf_bytes: &[u8]) -> Arc<Process> {
     {
         let segment_length: usize = header.p_memsz.try_into().unwrap();
         let segment = FrameAllocOptions::new()
-            .alloc_segment((segment_length + PAGE_SIZE - 1) / PAGE_SIZE) // todo
+            .alloc_segment((segment_length + PAGE_SIZE - 1) / PAGE_SIZE)
             .unwrap();
         let segment_offset = header.p_offset.try_into().unwrap();
         segment

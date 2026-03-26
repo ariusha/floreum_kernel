@@ -7,6 +7,7 @@ pub unsafe fn user_task(thread: Weak<Thread>) -> Option<()> {
     thread.upgrade()?.park_waker.call_once(|| park_waker);
     drop(preempt_guard);
     let handle = Handle::new(&thread, &park_waiter);
+    handle.park()?;
     let mut user_mode = UserMode::new(thread.upgrade()?.context.read().0.clone());
     loop {
         let reason = user_mode.execute(|| match thread.upgrade() {

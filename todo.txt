@@ -1,0 +1,4 @@
+- allow kickstart to use non-contiguous segments
+- allow tls in kickstart from elf
+- allow non-contiguous segments in singular map() calls
+- require zero-copy pages in exchangers

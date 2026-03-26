@@ -1,6 +1,5 @@
-use crate::{architecture::Abi, handle::Handle, process::Thread};
-use alloc::sync::Weak;
-use ostd::{mm::{CachePolicy, FrameAllocOptions, PAGE_SIZE, PageFlags, PageProperty}, sync::Waiter, task::disable_preempt};
+use crate::{architecture::Abi, handle::Handle};
+use ostd::{mm::{CachePolicy, FrameAllocOptions, PAGE_SIZE, PageFlags, PageProperty}, task::disable_preempt};
 pub fn handle(handle: &Handle, abi: Abi) -> Option<Abi> {
     let offset: usize = abi.1.try_into().ok()?;
     let length: usize = abi.2.try_into().ok()?;
@@ -21,7 +20,7 @@ pub fn handle(handle: &Handle, abi: Abi) -> Option<Abi> {
     } else {
         CachePolicy::Writethrough
     });
-    for frame in FrameAllocOptions::new().alloc_segment(length).ok()? { // todo
+    for frame in FrameAllocOptions::new().alloc_segment(length).ok()? {
         cursor.map(frame.into(), properties);
     }
     Some(Abi(1, 0, 0, 0, 0, 0))

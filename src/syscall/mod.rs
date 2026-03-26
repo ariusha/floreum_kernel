@@ -2,8 +2,6 @@ pub mod abort;
 pub mod debug;
 pub mod map;
 use crate::{architecture::Abi, handle::Handle};
-use alloc::sync::Weak;
-use ostd::sync::Waiter;
 const TAG_ABORT: u64 = 0;
 const TAG_MAP: u64 = 1;
 const TAG_DEBUG: u64 = 1024;

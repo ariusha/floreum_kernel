@@ -1,4 +1,3 @@
-use core::sync::atomic::Ordering;
 use alloc::sync::Weak;
 use ostd::sync::Waiter;
 use crate::process::Thread;
