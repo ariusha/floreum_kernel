@@ -31,6 +31,11 @@ impl Requester {
         });
         (requester, responder)
     }
+    pub fn new_immediate(response: Vec<u8>) -> Arc<Self> {
+        let (requester, responder) = Self::new_pair();
+        responder.respond(response);
+        requester
+    }
     pub fn query(&self) -> Option<Option<u64>> {
         if let Some(response) = self.response.read().as_ref() {
             Some(Some(response.len().try_into().ok()?))

@@ -6,6 +6,7 @@ use crate::process::Process;
 pub mod architecture;
 pub mod kickstart;
 pub mod process;
+pub mod link;
 pub mod device;
 pub mod request;
 pub mod syscall;

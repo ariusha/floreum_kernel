@@ -1,23 +1,26 @@
-use alloc::{rc::Weak, string::String, vec::Vec};
+use alloc::{format, rc::Weak, string::String, vec::Vec};
 use floreum_parser::{Entry, Message, Permit, Request, Response};
-use crate::{device::{Device, Link}, process::Process};
-pub fn resolve(links: &[Link], permit: Permit, path: &'a str) -> (Weak<Device>, Permit, String) {
-    
-}
+use crate::{device::Device, process::Process};
+use ostd::sync::RwMutex;
+use core::sync::atomic::AtomicBool;
+use crossbeam::queue::SegQueue;
 pub fn handle(process: &Process, request: Vec<u8>) -> Option<u64> {
-    match <Message<&str, &[u8], Vec<Entry<&str>>> as TryInto<Request<&str, &[u8], Vec<Entry<&str>>>>>::try_into(Message::from_bytes(request.as_slice()).ok()?).ok()? {
-        Request::Open(request_open) => ,
-        Request::Flush(request_flush) => todo!(),
-        Request::Close(request_close) => todo!(),
-        Request::Metadata(request_metadata) => todo!(),
-        Request::Setmeta(request_setmeta) => todo!(),
-        Request::List(request_list) => todo!(),
-        Request::Remove(request_remove) => todo!(),
-        Request::Read(request_read) => todo!(),
-        Request::Write(request_write) => todo!(),
-        Request::Seek(request_seek) => todo!(),
-        Request::Copy(request_copy) => todo!(),
-        Request::Link(request_link) => todo!(),
-        Request::Drop(request_drop) => todo!(),
+    match <Message<&str, &[u8], Vec<Entry<&str>>> as TryInto<Request<&str, &[u8]>>>::try_into(Message::from_bytes(request.as_slice()).ok()?).ok()? {
+        Request::Open(request) => {
+            let path = process.workspace.read().clone().resolve(process.device(), todo!(), format!("/workspace/{}", request.path));
+            todo!()
+        },
+        Request::Flush(request) => todo!(),
+        Request::Close(request) => todo!(),
+        Request::Metadata(request) => todo!(),
+        Request::Setmeta(request) => todo!(),
+        Request::List(request) => todo!(),
+        Request::Remove(request) => todo!(),
+        Request::Read(request) => todo!(),
+        Request::Write(request) => todo!(),
+        Request::Seek(request) => todo!(),
+        Request::Copy(request) => todo!(),
+        Request::Link(request) => todo!(),
+        Request::Drop(request) => todo!(),
     }
 }
