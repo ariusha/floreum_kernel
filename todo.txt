@@ -1,4 +1,28 @@
-- allow kickstart to use non-contiguous segments
-- allow tls in kickstart from elf
-- allow non-contiguous segments in singular map() calls
-- require zero-copy pages in exchangers
+allocator set
+pfa
+allocator
+critical section
+FINISHED ^
+TODO v
+switch to branch_allocator
+move away from shell script build system
+fix can_block
+bitmap finding
+paging
+gdt
+heap
+physframeset reader/writer
+paging
+kernel tasks
+round-robin scheduler
+replace pfa lock with mutex
+tethys crate
+abi
+process tree name resolver (nested names within /process/children)
+jump to userspace (swap kernel and user gs on switching between kernel and user mode)
+extract physframeset from usermode program's address space
+kernel servers
+"license" server for kernel libraries
+make kernel tunables available at runtime
+change vm allocator size depending on 4-level or 5-level paging
+remove link_section's

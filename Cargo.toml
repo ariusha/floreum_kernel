@@ -1,14 +1,30 @@
 [package]
 name = "floreum_kernel"
-version = "0.1.0"
+version = "0.6.0"
 edition = "2024"
 
-[dependencies]
-ostd = "0.17.1"
-crossbeam = { version = "0.8.4", default-features = false, features = ["alloc"] }
-elf = { version = "0.8.0", default-features = false, features = ["alloc", "to_str"] }
-floreum_parser = "14.1.0"
-spin = "0.10.0"
+[[bin]]
+name = "floreum_kernel"
+test = false
+bench = false
 
-[workspace]
-exclude = ["target/osdk/base", "target/osdk/test-base"]
+[features]
+default = ["english"]
+english = []
+
+[dependencies]
+acpi = "6.1.1"
+limine = "0.6.3"
+spin = "0.10.0"
+spinning_top = "0.3.0"
+talc = { version = "5.0.3", features = ["counters", "nightly"] }
+x86_64 = "0.15.4"
+
+[profile.dev]
+panic = "abort"
+opt-level = 's'
+
+[profile.release]
+panic = "abort"
+lto = true
+opt-level = 's'
